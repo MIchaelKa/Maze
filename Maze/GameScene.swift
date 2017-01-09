@@ -305,13 +305,9 @@ class GameScene: SKScene {
     // Control
     
     var worldPosition: CGPoint!
-
     var isHorizontalMove: Bool?
-    
     var playerCoord: Cell = (0, 0)
-    
-    var movePlayerCoord: Cell = (0, 0)
-    var moveWorldPosition: CGPoint!
+
     
     // class for cell with this function
     func makeMove(direction: Direction) {
@@ -324,19 +320,6 @@ class GameScene: SKScene {
             playerCoord.col -= 1
         case .right:
             playerCoord.col += 1
-        }
-    }
-    
-    func makeMoveTemp(direction: Direction) {
-        switch direction {
-        case .up:
-            movePlayerCoord.row -= 1
-        case .down:
-            movePlayerCoord.row += 1
-        case .left:
-            movePlayerCoord.col -= 1
-        case .right:
-            movePlayerCoord.col += 1
         }
     }
     
@@ -358,13 +341,10 @@ class GameScene: SKScene {
     
     func checkPlayer(direction: Direction) -> Bool {
         return !checkWall(row: playerCoord.row, col: playerCoord.col, direction: direction)
-        //return !checkWall(row: movePlayerCoord.row, col: movePlayerCoord.col, direction: direction)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //worldPosition = world?.position
-        movePlayerCoord = playerCoord
-        moveWorldPosition = worldPosition
+
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -376,8 +356,6 @@ class GameScene: SKScene {
             let translation = CGPoint(x: position.x - previousPosition.x,
                                       y: position.y - previousPosition.y)
             
-            var moveTranslation = CGPoint(x: world!.position.x - worldPosition.x,
-                                          y: world!.position.y - worldPosition.y)
             
             let direction = moveDirection(from: translation)
             let isHorizontal = direction.isHorizontal()
@@ -386,46 +364,50 @@ class GameScene: SKScene {
                 isHorizontalMove = isHorizontal
             }
             
-            // first - make move
-            // second - check
-            
             var tempWorldPosition = world!.position
             
             if checkPlayer(direction: direction) {
                 if isHorizontal == isHorizontalMove {
                     if isHorizontal {
                         
+                        tempWorldPosition.x -= translation.x
+
+                        let moveTranslation = CGPoint(x: tempWorldPosition.x - worldPosition.x,
+                                                      y: tempWorldPosition.y - worldPosition.y)
                         
                         
-                        if abs(moveTranslation.x) > wallLength {
+                        if abs(moveTranslation.x) >= wallLength {
                             makeMove(direction: direction)
                             if translation.x > 0 {
                                 worldPosition.x -= wallLength
                             } else {
                                 worldPosition.x += wallLength
                             }
-                            print(direction)
-                            print(playerCoord)
+                            world!.position = worldPosition
+                        } else {
+                            world!.position.x -= translation.x
                         }
-                        
-                        world!.position.x -= translation.x
-                        
-                        /// !!!
-                        
-                        tempWorldPosition.x -= translation.x
-                        moveTranslation = CGPoint(x: tempWorldPosition.x - worldPosition.x,
-                                                  y: tempWorldPosition.y - worldPosition.y)
-                        
-                        if abs(moveTranslation.x) > wallLength / 3 {
-                            // check again
-                        }
-                        
-                        
-                        
                         
                         
                     } else {
-                        world!.position.y -= translation.y
+                        
+                        tempWorldPosition.y -= translation.y
+                        
+                        let moveTranslation = CGPoint(x: tempWorldPosition.x - worldPosition.x,
+                                                      y: tempWorldPosition.y - worldPosition.y)
+                        
+                        if abs(moveTranslation.y) >= wallLength {
+                            makeMove(direction: direction)
+                            if translation.y > 0 {
+                                worldPosition.y -= wallLength
+                            } else {
+                                worldPosition.y += wallLength
+                            }
+                            world!.position = worldPosition
+                        } else {
+                            world!.position.y -= translation.y
+                        }
+                        
                     }
                 }
             }
@@ -457,9 +439,6 @@ class GameScene: SKScene {
                     }
                 }
             }
-            
-            
-            print(playerCoord)
             
             world!.position = worldPosition
             isHorizontalMove = nil
