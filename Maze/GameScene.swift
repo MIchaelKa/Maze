@@ -16,8 +16,8 @@ class GameScene: SKScene {
     
     let wallLength: CGFloat = 40.0
     
-    var rowNumber: Int = 0
-    var colNumber: Int = 0
+    var rowNumber: Int = 5
+    var colNumber: Int = 5
     
     var maze: [[Bool]] = []
     
@@ -31,22 +31,78 @@ class GameScene: SKScene {
     var worldDestanationY: CGFloat = 0.0
     
     override func didMove(to view: SKView) {
+        
         backgroundColor = SKColor.white
         physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         
         showMaze()
-        //setupAccelerometerControl()
     }
     
-    func showMaze() {
-        initMaze(row: 15, col: 15)
-        drawMaze()
-    }
-    
-    func initMaze(row: Int, col: Int) {
+    func drawPlayer() {
         
-        rowNumber = row
-        colNumber = col
+        let offset: CGFloat = 5.0
+        
+        let player = SKShapeNode(rectOf: CGSize(width: wallLength - 2 * offset,
+                                                height: wallLength - 2 * offset))
+        player.position = CGPoint(x: frame.midX, y: frame.midY)
+        player.fillColor = SKColor.darkGray
+        
+        addChild(player)
+    }
+    
+    func drawMoves() {
+        for direction in Direction.all {
+            if !checkWall(row: playerCoord.row, col: playerCoord.col, direction: direction) {
+                drawMove(row: playerCoord.row, col: playerCoord.col, direction: direction)
+            }
+        }
+    }
+    
+    func drawMove(row: Int, col: Int, direction: Direction) {
+        
+        let height = CGFloat(rowNumber) * wallLength / 2.0
+        let width = CGFloat(colNumber) * wallLength / 2.0
+        
+        var rowIdx = row
+        var colIdx = col
+        
+        switch direction {
+        case .up:
+            rowIdx -= 1
+        case .down:
+            rowIdx += 1
+        case .left:
+            colIdx -= 1
+        case .right:
+            colIdx += 1
+        }
+        
+        let offset: CGFloat = 10.0
+        
+        let move = SKShapeNode(rectOf: CGSize(width: wallLength - 2 * offset,
+                                              height: wallLength - 2 * offset))
+        
+        move.position = CGPoint(x: CGFloat(colIdx) * wallLength + (2 * offset) - width,
+                                y: height - (2 * offset) - CGFloat(rowIdx) * wallLength)
+
+        move.strokeColor = SKColor.darkGray
+        
+        world?.addChild(move)
+    }
+    
+    
+    func showMaze() {        
+        initMaze()
+        drawPlayer()
+        drawMaze()
+        drawMoves()
+    }
+    
+    func initMaze() {
+        
+        // Player coordinate
+        
+        playerCoord = (colNumber / 2, rowNumber / 2)
         
         // 0. Clear all
         
@@ -57,10 +113,10 @@ class GameScene: SKScene {
         
         // 1. Create all walls
         
-        let rowCount = row * 2 + 1
+        let rowCount = rowNumber * 2 + 1
         
         for index in 1...rowCount {
-            let colCount = (index % 2) == 0 ? col + 1 : col
+            let colCount = (index % 2) == 0 ? colNumber + 1 : colNumber
             let rowMaze = Array(repeating: true, count: colCount)
             maze.append(rowMaze)
         }
@@ -68,7 +124,7 @@ class GameScene: SKScene {
         // 2. Create the main path
         
         var rowIdx = 0
-        var colIdx = Int(arc4random_uniform(UInt32(col)))
+        var colIdx = Int(arc4random_uniform(UInt32(colNumber)))
         var direction = Direction.down
         
         let _ = addCellToPath(row: rowIdx, col: colIdx)
@@ -76,12 +132,12 @@ class GameScene: SKScene {
         let wall = getWall(row: rowIdx, col: colIdx, direction: .up)
         maze[wall.row][wall.col] = false
         
-        while (rowIdx != row) {
+        while (rowIdx != rowNumber) {
 
             var exclude = [direction.inverse()]
             if rowIdx == 0 { exclude.append(.up) }
             if colIdx == 0 { exclude.append(.left) }
-            if colIdx == col - 1 { exclude.append(.right) }
+            if colIdx == colNumber - 1 { exclude.append(.right) }
             
             direction = Direction.random(exclude: exclude)
             
@@ -106,9 +162,7 @@ class GameScene: SKScene {
         
         // 3. Join each cell with the main path
         join()
-        
-        print(path.count)
-        
+       
     }
     
     func join() {
@@ -146,6 +200,7 @@ class GameScene: SKScene {
                 print("Error")
             }
             
+            // playerCoord and below code - one class?
             switch direction {
             case .up:
                 rowIdx -= 1
@@ -205,23 +260,6 @@ class GameScene: SKScene {
     }
     
     func drawMaze() {
-        
-        // Player
-        
-        let offset: CGFloat = 5.0
-        
-        let player = SKShapeNode(rectOf: CGSize(width: wallLength - 2 * offset,
-                                                height: wallLength - 2 * offset))
-        player.position = CGPoint(x: frame.midX, y: frame.midY)
-        player.fillColor = SKColor.darkGray
-        
-        addChild(player)
-        
-        // Player coordinate
-        
-        playerCoord = (colNumber / 2, rowNumber / 2)
-        
-        // Maze
         
         let width: CGFloat = CGFloat(colNumber) * wallLength
         let height: CGFloat = CGFloat(rowNumber) * wallLength
@@ -297,7 +335,9 @@ class GameScene: SKScene {
     override func update(_ currentTime: CFTimeInterval) {
         //let action = SKAction.move(to: CGPoint(x: worldDestanationX, y: worldDestanationY), duration: 1)
         //world?.run(action)
-        if playerCoord.row == -1 || playerCoord.row == rowNumber {
+        if playerCoord.row == -1 || (playerCoord.row == rowNumber && rowNumber != 0) {
+            rowNumber += 2
+            colNumber += 2
             showMaze()
         }
     }
@@ -383,7 +423,10 @@ class GameScene: SKScene {
                             } else {
                                 worldPosition.x += wallLength
                             }
+                            
                             world!.position = worldPosition
+                            isHorizontalMove = nil
+                            
                         } else {
                             world!.position.x -= translation.x
                         }
@@ -403,14 +446,20 @@ class GameScene: SKScene {
                             } else {
                                 worldPosition.y += wallLength
                             }
+                            
                             world!.position = worldPosition
+                            isHorizontalMove = nil
+                            
                         } else {
                             world!.position.y -= translation.y
                         }
                         
                     }
                 }
+            } else {
+                print(direction)
             }
+            
         }
     }
     
