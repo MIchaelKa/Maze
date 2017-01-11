@@ -20,6 +20,8 @@ class MazeNode: SKShapeNode {
     
     var playerCoord: Cell = (0, 0)
     
+    var moves: [SKNode] = []
+    
     init(row: Int, col: Int) {
         
         mazeModel = MazeModel(row: row, col: col)
@@ -77,6 +79,10 @@ class MazeNode: SKShapeNode {
         case .right:
             playerCoord.col += 1
         }
+        
+        if !isPlayerOut() {
+            drawMoves()
+        }
     }
     
     // MARK: Walls
@@ -91,7 +97,9 @@ class MazeNode: SKShapeNode {
             }
         }
         
-        drawMoves()
+        if !isPlayerOut() {
+            drawMoves()
+        }        
     }
     
     func drawWall(_ row: Int, _ col: Int) {
@@ -127,11 +135,36 @@ class MazeNode: SKShapeNode {
     // MARK: Moves
     
     func drawMoves() {
+        
+        for node in moves {
+            node.removeFromParent()
+        }
+        
+        moves.removeAll()
+        
+        drawMove(row: playerCoord.row, col: playerCoord.col)
+        
         for direction in Direction.all {
             if !mazeModel.checkWall(row: playerCoord.row, col: playerCoord.col, direction: direction) {
                 drawMove(row: playerCoord.row, col: playerCoord.col, direction: direction)
             }
         }
+    }
+    
+    func drawMove(row: Int, col: Int) {
+        
+        let offset: CGFloat = 10.0
+        
+        let move = SKShapeNode(rectOf: CGSize(width: wallLength - 2 * offset,
+                                              height: wallLength - 2 * offset))
+        
+        move.position = CGPoint(x: CGFloat(col) * wallLength + (2 * offset) - (width / 2.0),
+                                y: (height / 2.0) - (2 * offset) - CGFloat(row) * wallLength)
+        
+        move.strokeColor = SKColor.darkGray
+        
+        moves.append(move)
+        self.addChild(move)
     }
     
     func drawMove(row: Int, col: Int, direction: Direction) {
@@ -150,17 +183,7 @@ class MazeNode: SKShapeNode {
             colIdx += 1
         }
         
-        let offset: CGFloat = 10.0
-        
-        let move = SKShapeNode(rectOf: CGSize(width: wallLength - 2 * offset,
-                                              height: wallLength - 2 * offset))
-        
-        move.position = CGPoint(x: CGFloat(colIdx) * wallLength + (2 * offset) - (width / 2.0),
-                                y: (height / 2.0) - (2 * offset) - CGFloat(rowIdx) * wallLength)
-        
-        move.strokeColor = SKColor.darkGray
-        
-        self.addChild(move)
+        drawMove(row: rowIdx, col: colIdx)
     }
     
     required init?(coder aDecoder: NSCoder) {
