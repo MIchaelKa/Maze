@@ -215,7 +215,11 @@ class GameScene: SKScene {
                 }
             }
             
-            world!.position = worldPosition
+            let action = SKAction.move(to: worldPosition, duration: 0.2)
+            world!.run(action)
+            
+            //world!.position = worldPosition
+            
             isHorizontalMove = nil
         }
     }
