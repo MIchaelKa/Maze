@@ -10,8 +10,6 @@ import SpriteKit
 import GameplayKit
 import CoreMotion
 
-typealias Cell = (row: Int, col: Int)
-
 class GameScene: SKScene {
     
     let wallLength: CGFloat = 40.0 // TODO: shared 
@@ -78,8 +76,10 @@ class GameScene: SKScene {
     }
     
     override func update(_ currentTime: CFTimeInterval) {
+        
         //let action = SKAction.move(to: CGPoint(x: worldDestanationX, y: worldDestanationY), duration: 1)
         //world?.run(action)
+        
         if world!.isPlayerOut() {
             rowNumber += 2
             colNumber += 2

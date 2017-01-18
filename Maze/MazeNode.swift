@@ -12,13 +12,14 @@ import SpriteKit
 class MazeNode: SKShapeNode {
     
     let wallLength: CGFloat = 40.0
+    let maxMovesDepth: Int = 3
     
     var mazeModel: MazeModel
     
     var width: CGFloat
     var height: CGFloat
     
-    var playerCoord: Cell = (0, 0)
+    var playerCoord: Cell
     
     var moves: [SKNode] = []
     
@@ -27,7 +28,7 @@ class MazeNode: SKShapeNode {
         mazeModel = MazeModel(row: row, col: col)
         mazeModel.generate()
         
-        playerCoord = (row / 2, col / 2)
+        playerCoord = Cell(row / 2, col / 2)
         
         width = CGFloat(mazeModel.colNumber) * wallLength
         height = CGFloat(mazeModel.rowNumber) * wallLength
@@ -42,7 +43,7 @@ class MazeNode: SKShapeNode {
         
         self.mazeModel = mazeModel
         
-        playerCoord = (mazeModel.rowNumber / 2, mazeModel.colNumber / 2)
+        playerCoord = Cell(mazeModel.rowNumber / 2, mazeModel.colNumber / 2)
         
         width = CGFloat(mazeModel.colNumber) * wallLength
         height = CGFloat(mazeModel.rowNumber) * wallLength
@@ -64,21 +65,12 @@ class MazeNode: SKShapeNode {
     }
     
     func checkPlayer(direction: Direction) -> Bool {
-        return !mazeModel.checkWall(row: playerCoord.row, col: playerCoord.col, direction: direction)
+        return !mazeModel.checkWall(cell: playerCoord, direction: direction)
     }
-    
-    // class for cell with this function
+
     func makeMove(direction: Direction) {
-        switch direction {
-        case .up:
-            playerCoord.row -= 1
-        case .down:
-            playerCoord.row += 1
-        case .left:
-            playerCoord.col -= 1
-        case .right:
-            playerCoord.col += 1
-        }
+        
+        playerCoord.makeMove(to: direction)
         
         if !isPlayerOut() {
             drawMoves()
@@ -142,48 +134,39 @@ class MazeNode: SKShapeNode {
         
         moves.removeAll()
         
-        drawMove(row: playerCoord.row, col: playerCoord.col)
-        
-        for direction in Direction.all {
-            if !mazeModel.checkWall(row: playerCoord.row, col: playerCoord.col, direction: direction) {
-                drawMove(row: playerCoord.row, col: playerCoord.col, direction: direction)
-            }
-        }
+        drawMoves(cell: playerCoord, depth: 0)
     }
     
-    func drawMove(row: Int, col: Int) {
+    func drawMoves(cell: Cell, depth: Int) {
         
-        let offset: CGFloat = 10.0
+        if depth == maxMovesDepth {
+            return
+        } else {
+            if mazeModel.checkCell(cell: cell) {
+                let moves = mazeModel.getMoves(cell: cell)
+                for move in moves {
+                    drawMove(cell: move, depth: depth)
+                    drawMoves(cell: move, depth: depth + 1)
+                }
+            }            
+        }        
+    }
+    
+    func drawMove(cell: Cell, depth: Int) {
+        
+        let offset: CGFloat = 10.0 + CGFloat(depth) * 2
         
         let move = SKShapeNode(rectOf: CGSize(width: wallLength - 2 * offset,
                                               height: wallLength - 2 * offset))
         
-        move.position = CGPoint(x: CGFloat(col) * wallLength + (2 * offset) - (width / 2.0),
-                                y: (height / 2.0) - (2 * offset) - CGFloat(row) * wallLength)
+        move.position = CGPoint(x: CGFloat(cell.col) * wallLength - (width / 2.0) + wallLength / 2,
+                                y: (height / 2.0) - CGFloat(cell.row) * wallLength - wallLength / 2)
+
         
         move.strokeColor = SKColor.darkGray
         
         moves.append(move)
         self.addChild(move)
-    }
-    
-    func drawMove(row: Int, col: Int, direction: Direction) {
-        
-        var rowIdx = row
-        var colIdx = col
-        
-        switch direction {
-        case .up:
-            rowIdx -= 1
-        case .down:
-            rowIdx += 1
-        case .left:
-            colIdx -= 1
-        case .right:
-            colIdx += 1
-        }
-        
-        drawMove(row: rowIdx, col: colIdx)
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -16,6 +16,7 @@
 		4CC90BF71DF703600053B080 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC90BF61DF703600053B080 /* Direction.swift */; };
 		4CC90C0F1E2646870053B080 /* MazeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC90C0E1E2646860053B080 /* MazeModel.swift */; };
 		4CC90C111E264B570053B080 /* MazeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC90C101E264B570053B080 /* MazeNode.swift */; };
+		4CC90C4C1E2F4D630053B080 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC90C4B1E2F4D5C0053B080 /* Cell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		4CC90BF61DF703600053B080 /* Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
 		4CC90C0E1E2646860053B080 /* MazeModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MazeModel.swift; sourceTree = "<group>"; };
 		4CC90C101E264B570053B080 /* MazeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MazeNode.swift; sourceTree = "<group>"; };
+		4CC90C4B1E2F4D5C0053B080 /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				4CC90C0E1E2646860053B080 /* MazeModel.swift */,
 				4CC90C101E264B570053B080 /* MazeNode.swift */,
 				4CC90BF61DF703600053B080 /* Direction.swift */,
+				4CC90C4B1E2F4D5C0053B080 /* Cell.swift */,
 				4CC90BE81DF5BF1F0053B080 /* Main.storyboard */,
 				4CC90BEB1DF5BF1F0053B080 /* Assets.xcassets */,
 				4CC90BED1DF5BF1F0053B080 /* LaunchScreen.storyboard */,
@@ -151,6 +154,7 @@
 			files = (
 				4CC90C111E264B570053B080 /* MazeNode.swift in Sources */,
 				4CC90BE51DF5BF1F0053B080 /* GameScene.swift in Sources */,
+				4CC90C4C1E2F4D630053B080 /* Cell.swift in Sources */,
 				4CC90BE71DF5BF1F0053B080 /* GameViewController.swift in Sources */,
 				4CC90C0F1E2646870053B080 /* MazeModel.swift in Sources */,
 				4CC90BDF1DF5BF1E0053B080 /* AppDelegate.swift in Sources */,
