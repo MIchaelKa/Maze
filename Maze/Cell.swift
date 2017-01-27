@@ -32,5 +32,13 @@ class Cell {
         cell.makeMove(to: direction)
         return cell
     }
-    
+}
+
+extension Cell {
+    static func == (left: Cell, right: Cell) -> Bool {
+        return (left.row == right.row) && (left.col == right.col)
+    }
+    static func != (left: Cell, right: Cell) -> Bool {
+        return !(left == right)
+    }
 }

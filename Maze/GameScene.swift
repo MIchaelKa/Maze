@@ -12,8 +12,6 @@ import CoreMotion
 
 class GameScene: SKScene {
     
-    let wallLength: CGFloat = 40.0 // TODO: shared 
-    
     var rowNumber: Int = 5
     var colNumber: Int = 5
     
@@ -37,8 +35,8 @@ class GameScene: SKScene {
         
         let offset: CGFloat = 5.0
         
-        let player = SKShapeNode(rectOf: CGSize(width: wallLength - 2 * offset,
-                                                height: wallLength - 2 * offset))
+        let player = SKShapeNode(rectOf: CGSize(width:  UI.wallLength - 2 * offset,
+                                                height: UI.wallLength - 2 * offset))
         player.position = CGPoint(x: frame.midX, y: frame.midY)
         player.fillColor = SKColor.darkGray
         
@@ -142,12 +140,12 @@ class GameScene: SKScene {
                                                       y: tempWorldPosition.y - worldPosition.y)
                         
                         
-                        if abs(moveTranslation.x) >= wallLength {
+                        if abs(moveTranslation.x) >= UI.wallLength {
                             world!.makeMove(direction: direction)
                             if translation.x > 0 {
-                                worldPosition.x -= wallLength
+                                worldPosition.x -= UI.wallLength
                             } else {
-                                worldPosition.x += wallLength
+                                worldPosition.x += UI.wallLength
                             }
                             
                             world!.position = worldPosition
@@ -165,12 +163,12 @@ class GameScene: SKScene {
                         let moveTranslation = CGPoint(x: tempWorldPosition.x - worldPosition.x,
                                                       y: tempWorldPosition.y - worldPosition.y)
                         
-                        if abs(moveTranslation.y) >= wallLength {
+                        if abs(moveTranslation.y) >= UI.wallLength {
                             world!.makeMove(direction: direction)
                             if translation.y > 0 {
-                                worldPosition.y -= wallLength
+                                worldPosition.y -= UI.wallLength
                             } else {
-                                worldPosition.y += wallLength
+                                worldPosition.y += UI.wallLength
                             }
                             
                             world!.position = worldPosition
@@ -196,21 +194,21 @@ class GameScene: SKScene {
                                       y: world!.position.y - worldPosition.y)
             
             if isHorizontalMove! {
-                if abs(translation.x) > wallLength / 3 {
+                if abs(translation.x) > UI.wallLength / 3 {
                     world!.makeMove(direction: moveDirection(from: translation).inverse())
                     if translation.x > 0 {
-                        worldPosition.x += wallLength
+                        worldPosition.x += UI.wallLength
                     } else {
-                        worldPosition.x -= wallLength
+                        worldPosition.x -= UI.wallLength
                     }
                 }
             } else {
-                if abs(translation.y) > wallLength / 3 {
+                if abs(translation.y) > UI.wallLength / 3 {
                     world!.makeMove(direction: moveDirection(from: translation).inverse())
                     if translation.y > 0 {
-                        worldPosition.y += wallLength
+                        worldPosition.y += UI.wallLength
                     } else {
-                        worldPosition.y -= wallLength
+                        worldPosition.y -= UI.wallLength
                     }
                 }
             }

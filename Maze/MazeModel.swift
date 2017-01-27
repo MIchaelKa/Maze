@@ -171,6 +171,11 @@ class MazeModel {
         return maze[wall.row][wall.col]
     }
     
+    func removeWall(cell: Cell, direction: Direction) {
+        let wall = getWall(row: cell.row, col: cell.col, direction: direction)
+        maze[wall.row][wall.col] = false
+    }
+    
     func getWall(row: Int, col: Int, direction: Direction) -> (row: Int, col: Int) {
         switch direction {
             case .up:    return (row: row * 2,       col: col)
