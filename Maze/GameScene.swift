@@ -27,7 +27,7 @@ class GameScene: SKScene {
         backgroundColor = SKColor.white
         physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         
-        drawPlayer()
+        //drawPlayer()
         drawMaze()
     }
     
@@ -52,6 +52,7 @@ class GameScene: SKScene {
         world?.drawMaze()
         world?.position = CGPoint(x: frame.midX, y: frame.midY)
         worldPosition = world?.position
+        world?.savedPosition = world?.position
         
         addChild(world!)
     }
@@ -152,7 +153,9 @@ class GameScene: SKScene {
                             isHorizontalMove = nil
                             
                         } else {
-                            world!.position.x -= translation.x
+                            var newPosition = world!.position
+                            newPosition.x -= translation.x
+                            world!.move(newPosition, direction: direction)
                         }
                         
                         
@@ -175,7 +178,9 @@ class GameScene: SKScene {
                             isHorizontalMove = nil
                             
                         } else {
-                            world!.position.y -= translation.y
+                            var newPosition = world!.position
+                            newPosition.y -= translation.y
+                            world!.move(newPosition, direction: direction)
                         }
                         
                     }

@@ -42,5 +42,75 @@ class Node<Type> {
         }
     }
     
+    func getLeaf() -> Node<Type> {
+        
+        for direction in Direction.all {
+            if let child = self.child(from: direction) {
+                return child.getLeaf()
+            }
+        }
+        
+        return self
+    }
+    
+    func leafs() -> [Node<Type>] {
+        
+        var leafs = [Node<Type>]()
+        
+        for direction in Direction.all {
+            if let child = self.child(from: direction) {
+                let childLeafs = child.leafs()
+                leafs.append(contentsOf: childLeafs)
+            }
+        }
+        
+        if leafs.count == 0 {
+            return [self]
+        }
+        
+        return leafs        
+    }
+    
+    func all() -> [Node<Type>] {
+        
+        var all = [Node<Type>]()
+        
+        for direction in Direction.all {
+            if let child = self.child(from: direction) {
+                all.append(contentsOf: child.all())
+            }
+        }
+        
+        if all.count == 0 {
+            return [self]
+        } else {
+            all.append(self)
+        }
+        
+        return all
+    }
+    
+    func childs(from direction: Direction) -> [Node<Type>] {
+        if let child = self.child(from: direction) {
+            return child.all()
+        } else {
+            return []
+        }
+    }
+    
+    func childs(exclude direction: Direction) -> [Node<Type>] {
+        
+        var childs = [Node<Type>]()
+        let directions = Direction.all(exclude: direction)
+        
+        for direction in directions {
+            if let child = self.child(from: direction) {
+                childs.append(contentsOf: child.all())
+            }
+        }
+        
+        return childs
+    }
+    
     
 }

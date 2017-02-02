@@ -18,6 +18,7 @@ class MazeNode: SKShapeNode {
     var width: CGFloat
     var height: CGFloat
     
+    var savedPosition: CGPoint!
     var playerCoord: Cell
 
     var movesTree: Node<Move>?
@@ -66,14 +67,50 @@ class MazeNode: SKShapeNode {
     func checkPlayer(direction: Direction) -> Bool {
         return !mazeModel.checkWall(cell: playerCoord, direction: direction)
     }
+    
+    // MARK: Move
 
     func makeMove(direction: Direction) {
         
         playerCoord.makeMove(to: direction)
         
+        switch direction {
+            case .up:    savedPosition.y -= UI.wallLength
+            case .down:  savedPosition.y += UI.wallLength
+            case .left:  savedPosition.x += UI.wallLength
+            case .right: savedPosition.x -= UI.wallLength
+        }
+        
         if !isPlayerOut() {
             drawMoves()
         }
+        
+        // need to change root(movesTree)
+    }
+    
+    func move(_ pos: CGPoint, direction: Direction) {
+        position = pos
+        
+        let offset: CGFloat
+        if direction.isHorizontal() {
+            offset = abs(position.x - savedPosition.x) / UI.wallLength
+        } else {
+            offset = abs(position.y - savedPosition.y) / UI.wallLength
+        }
+        
+        if let moveChilds = movesTree?.childs(from: direction) {
+            for child in moveChilds {
+                child.value.updateDepth(value: -offset)
+            }
+        }
+        
+        if let otherChilds = movesTree?.childs(exclude: direction) {
+            for child in otherChilds {
+                child.value.updateDepth(value: offset)
+            }
+        }
+        
+        movesTree?.value.updateDepth(value: offset)
     }
     
     // MARK: Walls
@@ -171,7 +208,7 @@ class MazeNode: SKShapeNode {
         let rootMove = Move(cell: playerCoord, depth: 0)
         movesTree = Node<Move>(value: rootMove)
         
-        getMoves(node: movesTree!, depth: 0)
+        getMoves(node: movesTree!, depth: 1)
     }
     
     func getMoves(node: Node<Move>, depth: Int) {

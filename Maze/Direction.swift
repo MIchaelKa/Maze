@@ -19,6 +19,14 @@ enum Direction: Int {
         return [.up, .down, .left, .right]
     }
     
+    static func all(exclude: Direction) -> [Direction] {
+        var directions = Direction.all
+        if let index = directions.index(of: exclude) {
+            directions.remove(at: index)
+        }
+        return directions
+    }
+    
     static func random() -> Direction {
         let max = right.rawValue
         let rand = arc4random_uniform(UInt32(max + 1))
