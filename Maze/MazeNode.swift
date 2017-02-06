@@ -89,28 +89,59 @@ class MazeNode: SKShapeNode {
     }
     
     func move(_ pos: CGPoint, direction: Direction) {
+        
+        var offset: CGFloat
+        if direction.isHorizontal() {
+            offset = abs(position.x - pos.x) / UI.wallLength
+        } else {
+            offset = abs(position.y - pos.y) / UI.wallLength
+        }
+        
         position = pos
         
-        let offset: CGFloat
+        let currentTranslation = savedPosition - position
+        
+        if currentTranslation.direction == direction {
+            
+            if let moveChilds = movesTree?.childs(from: direction) {
+                for child in moveChilds {
+                    child.value.updateDepth(value: -offset)
+                }
+            }
+            
+            if let otherChilds = movesTree?.childs(exclude: direction) {
+                for child in otherChilds {
+                    child.value.updateDepth(value: offset)
+                }
+            }
+            
+        } else {
+            
+            if let otherChilds = movesTree?.childs(from: direction.inverse()) {
+                for child in otherChilds {
+                    child.value.updateDepth(value: offset)
+                }
+            }
+            
+            if let moveChilds = movesTree?.childs(exclude: direction.inverse()) {
+                for child in moveChilds {
+                    child.value.updateDepth(value: -offset)
+                }
+            }
+        }
+        
+        
+        // Root
+        
         if direction.isHorizontal() {
             offset = abs(position.x - savedPosition.x) / UI.wallLength
         } else {
             offset = abs(position.y - savedPosition.y) / UI.wallLength
         }
+       
+        print(offset)
         
-        if let moveChilds = movesTree?.childs(from: direction) {
-            for child in moveChilds {
-                child.value.updateDepth(value: -offset)
-            }
-        }
-        
-        if let otherChilds = movesTree?.childs(exclude: direction) {
-            for child in otherChilds {
-                child.value.updateDepth(value: offset)
-            }
-        }
-        
-        movesTree?.value.updateDepth(value: offset)
+        movesTree?.value.updateRootDepth(value: offset)
     }
     
     // MARK: Walls
