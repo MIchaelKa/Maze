@@ -138,8 +138,6 @@ class MazeNode: SKShapeNode {
         } else {
             offset = abs(position.y - savedPosition.y) / UI.wallLength
         }
-       
-        print(offset)
         
         movesTree?.value.updateRootDepth(value: offset)
     }

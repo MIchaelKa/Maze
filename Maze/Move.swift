@@ -52,14 +52,20 @@ class Move: SKShapeNode {
     
     func path(value: CGFloat) -> CGPath {
        
-        let offset: CGFloat = 10.0 + value * 4
+        let offset: CGFloat = 10.0 + value * 3
         let size = UI.wallLength - 2 * offset
         
         let rect = CGRect(origin: CGPoint(x: -size / 2.0, y: -size / 2.0),
                           size: CGSize(width: size, height: size))
+        
+        if size < 0 {
+            strokeColor = SKColor.darkGray.withAlphaComponent(0)
+        } else {
+            strokeColor = SKColor.darkGray
+        }
        
         if 2 * cornerRadius > size {
-            return CGPath(rect: rect, transform: nil)
+            return CGPath(ellipseIn: rect, transform: nil)
         } else {
             return CGPath(roundedRect: rect,
                           cornerWidth: cornerRadius,

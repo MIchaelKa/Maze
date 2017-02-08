@@ -51,7 +51,6 @@ class GameScene: SKScene {
         
         world?.drawMaze()
         world?.position = CGPoint(x: frame.midX, y: frame.midY)
-        worldPosition = world?.position
         world?.savedPosition = world?.position
         
         addChild(world!)
@@ -88,7 +87,6 @@ class GameScene: SKScene {
     
     // Control
     
-    var worldPosition: CGPoint!
     var isHorizontalMove: Bool?
 
     
@@ -118,9 +116,7 @@ class GameScene: SKScene {
             let position = touch.location(in: self)
             let previousPosition = touch.previousLocation(in: self)
             
-            let translation = CGPoint(x: position.x - previousPosition.x,
-                                      y: position.y - previousPosition.y)
-            
+            let translation = position - previousPosition
             
             let direction = moveDirection(from: translation)
             let isHorizontal = direction.isHorizontal()
@@ -134,55 +130,29 @@ class GameScene: SKScene {
             if world!.checkPlayer(direction: direction) {
                 if isHorizontal == isHorizontalMove {
                     if isHorizontal {
-                        
                         tempWorldPosition.x -= translation.x
 
-                        let moveTranslation = CGPoint(x: tempWorldPosition.x - worldPosition.x,
-                                                      y: tempWorldPosition.y - worldPosition.y)
-                        
+                        let moveTranslation = tempWorldPosition - world!.savedPosition
                         
                         if abs(moveTranslation.x) >= UI.wallLength {
                             world!.makeMove(direction: direction)
-                            if translation.x > 0 {
-                                worldPosition.x -= UI.wallLength
-                            } else {
-                                worldPosition.x += UI.wallLength
-                            }
-                            
-                            world!.position = worldPosition
+                            world!.position = world!.savedPosition
                             isHorizontalMove = nil
-                            
                         } else {
-                            var newPosition = world!.position
-                            newPosition.x -= translation.x
-                            world!.move(newPosition, direction: direction)
+                            world!.move(tempWorldPosition, direction: direction)
                         }
-                        
-                        
                     } else {
-                        
                         tempWorldPosition.y -= translation.y
                         
-                        let moveTranslation = CGPoint(x: tempWorldPosition.x - worldPosition.x,
-                                                      y: tempWorldPosition.y - worldPosition.y)
+                        let moveTranslation = tempWorldPosition - world!.savedPosition
                         
                         if abs(moveTranslation.y) >= UI.wallLength {
                             world!.makeMove(direction: direction)
-                            if translation.y > 0 {
-                                worldPosition.y -= UI.wallLength
-                            } else {
-                                worldPosition.y += UI.wallLength
-                            }
-                            
-                            world!.position = worldPosition
+                            world!.position = world!.savedPosition
                             isHorizontalMove = nil
-                            
                         } else {
-                            var newPosition = world!.position
-                            newPosition.y -= translation.y
-                            world!.move(newPosition, direction: direction)
+                            world!.move(tempWorldPosition, direction: direction)
                         }
-                        
                     }
                 }
             } else {
@@ -195,33 +165,21 @@ class GameScene: SKScene {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isHorizontalMove != nil {
             
-            let translation = CGPoint(x: world!.position.x - worldPosition.x,
-                                      y: world!.position.y - worldPosition.y)
+            let translation = world!.position - world!.savedPosition
             
             if isHorizontalMove! {
                 if abs(translation.x) > UI.wallLength / 3 {
                     world!.makeMove(direction: moveDirection(from: translation).inverse())
-                    if translation.x > 0 {
-                        worldPosition.x += UI.wallLength
-                    } else {
-                        worldPosition.x -= UI.wallLength
-                    }
                 }
             } else {
                 if abs(translation.y) > UI.wallLength / 3 {
                     world!.makeMove(direction: moveDirection(from: translation).inverse())
-                    if translation.y > 0 {
-                        worldPosition.y += UI.wallLength
-                    } else {
-                        worldPosition.y -= UI.wallLength
-                    }
                 }
             }
             
-            let action = SKAction.move(to: worldPosition, duration: 0.2)
+            let action = SKAction.move(to: world!.savedPosition, duration: 0.2)
             world!.run(action)
             
-            //world!.position = worldPosition
             
             isHorizontalMove = nil
         }
