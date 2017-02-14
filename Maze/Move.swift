@@ -33,9 +33,9 @@ class Move: SKShapeNode {
         super.init()
         
         path = path(value: CGFloat(depth))
-        
-        //strokeColor = SKColor.darkGray
+
         lineWidth = 1.5
+        
         //fillColor = SKColor.darkGray
         //addChild(innerRectNode)
     }
@@ -58,11 +58,7 @@ class Move: SKShapeNode {
         let rect = CGRect(origin: CGPoint(x: -size / 2.0, y: -size / 2.0),
                           size: CGSize(width: size, height: size))
         
-        if size < 0 {
-            strokeColor = SKColor.darkGray.withAlphaComponent(0)
-        } else {
-            strokeColor = SKColor.darkGray.withAlphaComponent(1 - (value * 0.5))
-        }
+        strokeColor = SKColor.darkGray.withAlphaComponent(1 - (value * 0.5))
        
         if 2 * cornerRadius > size {
             return CGPath(ellipseIn: rect, transform: nil)

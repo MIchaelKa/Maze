@@ -86,25 +86,8 @@ class GameScene: SKScene {
     }
     
     // Control
-    
-    var isHorizontalMove: Bool?
 
-    
-    func moveDirection(from translation: CGPoint) -> Direction {
-        if abs(translation.x) > abs(translation.y) {
-            if translation.x > 0 {
-                return .right
-            } else {
-                return .left
-            }
-        } else {
-            if translation.y > 0 {
-                return .up
-            } else {
-                return .down
-            }
-        }
-    }
+    var currentDirection: Direction?
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 
@@ -118,70 +101,59 @@ class GameScene: SKScene {
             
             let translation = position - previousPosition
             
-            let direction = moveDirection(from: translation)
-            let isHorizontal = direction.isHorizontal()
+            let direction = translation.direction
             
-            if isHorizontalMove == nil {
-                isHorizontalMove = isHorizontal
+            if currentDirection == nil {
+                if world!.checkPlayer(direction: direction) {
+                    currentDirection = direction
+                } else if world!.checkPlayer(direction: translation.secondDirection) {
+                    currentDirection = translation.secondDirection
+                }
             }
             
-            var tempWorldPosition = world!.position
-            
-            if world!.checkPlayer(direction: direction) {
-                if isHorizontal == isHorizontalMove {
-                    if isHorizontal {
-                        tempWorldPosition.x -= translation.x
-
-                        let moveTranslation = tempWorldPosition - world!.savedPosition
-                        
-                        if abs(moveTranslation.x) >= UI.wallLength {
-                            world!.makeMove(direction: direction)
-                            world!.position = world!.savedPosition
-                            isHorizontalMove = nil
-                        } else {
-                            world!.move(tempWorldPosition, direction: direction)
-                        }
+            if currentDirection != nil {
+                
+                var tempWorldPosition = world!.position
+                let directionComponent = translation.component(using: currentDirection!)
+                
+                if !directionComponent.equalTo(CGPoint.zero) {
+                    
+                    tempWorldPosition -= directionComponent
+                    
+                    let moveTranslation = world!.savedPosition - tempWorldPosition
+                    let moveLength = moveTranslation.componentLength(using: currentDirection!)
+                    
+                    if moveLength >= UI.wallLength {
+                        world!.makeMove(direction: moveTranslation.direction)
+                        world!.position = world!.savedPosition
+                        currentDirection = nil
+                    } else if moveLength != 0.0 && moveTranslation.direction != currentDirection! {
+                        world!.position = world!.savedPosition
+                        currentDirection = nil
                     } else {
-                        tempWorldPosition.y -= translation.y
-                        
-                        let moveTranslation = tempWorldPosition - world!.savedPosition
-                        
-                        if abs(moveTranslation.y) >= UI.wallLength {
-                            world!.makeMove(direction: direction)
-                            world!.position = world!.savedPosition
-                            isHorizontalMove = nil
-                        } else {
-                            world!.move(tempWorldPosition, direction: direction)
-                        }
+                        world!.move(tempWorldPosition, direction: directionComponent.direction)
                     }
                 }
+                
             } else {
-                print(direction)
-            }
-            
+                //print("NO DIRECTION: \(direction)")
+            }            
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isHorizontalMove != nil {
+        if currentDirection != nil {
             
-            let translation = world!.position - world!.savedPosition
+            let translation = world!.savedPosition - world!.position
             
-            if isHorizontalMove! {
-                if abs(translation.x) > UI.wallLength / 3 {
-                    world!.makeMove(direction: moveDirection(from: translation).inverse())
-                }
-            } else {
-                if abs(translation.y) > UI.wallLength / 3 {
-                    world!.makeMove(direction: moveDirection(from: translation).inverse())
-                }
+            if translation.componentLength(using: currentDirection!) > UI.wallLength / 3 {
+                world!.makeMove(direction: currentDirection!) ///!!!
             }
             
             let action = SKAction.move(to: world!.savedPosition, duration: 0.2)
             world!.run(action)
             
-            
-            isHorizontalMove = nil
+            currentDirection = nil
         }
     }
     

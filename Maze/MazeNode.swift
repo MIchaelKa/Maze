@@ -72,6 +72,8 @@ class MazeNode: SKShapeNode {
 
     func makeMove(direction: Direction) {
         
+        print("MOVE: \(direction)")
+        
         playerCoord.makeMove(to: direction)
         
         switch direction {
