@@ -13,7 +13,8 @@ class MazeModel {
     var rowNumber: Int
     var colNumber: Int
     
-    var mainPath: [Cell] = []
+    var mainPath = Path()
+    
     var maze: [[Bool]] = []
     
     init(row: Int, col: Int) {
@@ -31,7 +32,7 @@ class MazeModel {
     
     func clear() {
         maze.removeAll()
-        mainPath.removeAll()
+        mainPath.clear()
     }
     
     func createAllWalls() {
@@ -51,7 +52,7 @@ class MazeModel {
         var colIdx = Int(arc4random_uniform(UInt32(colNumber)))
         var direction = Direction.down
         
-        let _ = addCellToPath(row: rowIdx, col: colIdx)
+        let _ = mainPath.addCell(row: rowIdx, col: colIdx)
         
         let wall = getWall(row: rowIdx, col: colIdx, direction: .up)
         maze[wall.row][wall.col] = false
@@ -78,7 +79,7 @@ class MazeModel {
                 colIdx += 1
             }
             
-            if addCellToPath(row: rowIdx, col: colIdx) {
+            if mainPath.addCell(row: rowIdx, col: colIdx) {
                 maze[wall.row][wall.col] = false
             }
         }
@@ -102,7 +103,13 @@ class MazeModel {
         
         var direction = Direction.up
         
-        while !isMainPath(row: rowIdx, col: colIdx) {
+        let path = Path()
+        
+        let _ = path.addCell(row: rowIdx, col: colIdx)
+        
+        var isMainPath = false
+        
+        while !isMainPath {
             
             var exclude = [direction.inverse()] // no need for first iteration. use optional?
             if rowIdx == 0             { exclude.append(.up) }
@@ -113,11 +120,6 @@ class MazeModel {
             direction = Direction.random(exclude: exclude)
             
             let wall = getWall(row: rowIdx, col: colIdx, direction: direction)
-            
-            // add all cells to main at the end, use separate path
-            if !addCellToPath(row: rowIdx, col: colIdx) {
-                print("Error")
-            }
 
             switch direction {
             case .up:
@@ -130,8 +132,15 @@ class MazeModel {
                 colIdx += 1
             }
             
-            maze[wall.row][wall.col] = false
+            if mainPath.contains(row: rowIdx, col: colIdx) {
+                isMainPath = true
+                maze[wall.row][wall.col] = false
+            } else if path.addCell(row: rowIdx, col: colIdx) {
+                maze[wall.row][wall.col] = false
+            }
         }
+        
+        mainPath.add(path: path)        
     }
     
     func isClosedCell(row: Int, col: Int) -> Bool {
@@ -184,27 +193,5 @@ class MazeModel {
             case .right: return (row: (row * 2) + 1, col: col + 1)
         }
     }
-    
-    // MARK: Main path helper methods
-    
-    func addCellToPath(row: Int, col: Int) -> Bool {
-        for cell in mainPath {
-            if cell.row == row && cell.col == col {
-                return false
-            }
-        }
-        mainPath.append(Cell(row, col))
-        return true
-    }
-    
-    func isMainPath(row: Int, col: Int) -> Bool {
-        for cell in mainPath {
-            if cell.row == row && cell.col == col {
-                return true
-            }
-        }
-        return false
-    }
-    
     
 }

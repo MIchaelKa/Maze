@@ -17,9 +17,7 @@ class Path {
     }
     
     func add(path: Path) {
-        for c in path.cells {
-            cells.append(c)
-        }
+        cells.append(contentsOf: path.cells)
     }
     
     func add(cell: Cell) -> Bool {
