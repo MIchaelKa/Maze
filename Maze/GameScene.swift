@@ -15,7 +15,7 @@ class GameScene: SKScene {
     var rowNumber: Int = 5
     var colNumber: Int = 5
     
-    var world: MazeNode?
+    var world: MapNode?
     
     var motionManager = CMMotionManager()
     
@@ -28,7 +28,7 @@ class GameScene: SKScene {
         physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         
         //drawPlayer()
-        drawMaze()
+        showMap()
     }
     
     func drawPlayer() {
@@ -42,16 +42,21 @@ class GameScene: SKScene {
         
         addChild(player)
     }
-        
-    func drawMaze() {
+    
+    func showMap() {
         
         world?.removeFromParent()
         
-        world = MazeNode(row: rowNumber, col: colNumber)
+        world = MapNode(row: 13, col: 13)
+        world!.position = CGPoint(x: frame.midX, y: frame.midY)
+        world!.savedPosition = world?.position
         
-        world?.drawMaze()
-        world?.position = CGPoint(x: frame.midX, y: frame.midY)
-        world?.savedPosition = world?.position
+        world!.addMazeNode(node: MazeNode(row: 5, col: 5, pos: Cell(3, 3)))
+        world!.addMazeNode(node: MazeNode(row: 3, col: 3, pos: Cell(8, 8)))
+        world!.addMazeNode(node: MazeNode(row: 3, col: 3, pos: Cell(2, 10)))
+        world!.addMazeNode(node: MazeNode(row: 3, col: 3, pos: Cell(8, 2)))
+        
+        world!.drawPlayer()
         
         addChild(world!)
     }
@@ -77,12 +82,6 @@ class GameScene: SKScene {
         
         //let action = SKAction.move(to: CGPoint(x: worldDestanationX, y: worldDestanationY), duration: 1)
         //world?.run(action)
-        
-        if world!.isPlayerOut() {
-            rowNumber += 2
-            colNumber += 2
-            drawMaze()
-        }
     }
     
     // Control

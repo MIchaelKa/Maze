@@ -175,9 +175,12 @@ class MazeModel {
     
     // MARK: Walls
     
-    func checkWall(cell: Cell, direction: Direction) -> Bool {
-        let wall = getWall(row: cell.row, col: cell.col, direction: direction)
-        return maze[wall.row][wall.col]
+    func checkWall(cell: Cell, direction: Direction) -> Bool {        
+        if checkCell(cell: cell) {
+            let wall = getWall(row: cell.row, col: cell.col, direction: direction)
+            return maze[wall.row][wall.col]
+        }
+        return false
     }
     
     func removeWall(cell: Cell, direction: Direction) {
