@@ -53,8 +53,9 @@ class GameScene: SKScene {
         
         world!.addMazeNode(node: MazeNode(row: 5, col: 5, pos: Cell(3, 3)))
         world!.addMazeNode(node: MazeNode(row: 3, col: 3, pos: Cell(8, 8)))
-        world!.addMazeNode(node: MazeNode(row: 3, col: 3, pos: Cell(2, 10)))
         world!.addMazeNode(node: MazeNode(row: 3, col: 3, pos: Cell(8, 2)))
+        
+        world!.addLifeNode(node: LifeNode(row: 5, col: 5, pos: Cell(3, 9)))
         
         world!.drawPlayer()
         

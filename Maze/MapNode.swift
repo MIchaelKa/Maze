@@ -55,6 +55,14 @@ class MapNode: SKShapeNode {
         addChild(node)
     }
     
+    func addLifeNode(node: LifeNode) {
+        
+        node.position = CGPoint(x: CGFloat(node.mapPosition.col) * UI.wallLength - (width / 2.0) + UI.wallLength / 2,
+                                y: (height / 2.0) - CGFloat(node.mapPosition.row) * UI.wallLength - UI.wallLength / 2)
+        
+        addChild(node)
+    }
+    
     // MARK: Move
     
     func makeMove(direction: Direction) {
