@@ -15,6 +15,7 @@
 		4C8A23431E55ED4F00C2BBC0 /* MapNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8A23421E55ED4C00C2BBC0 /* MapNode.swift */; };
 		4C8A23491E5B0C6200C2BBC0 /* LifeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8A23481E5B0C6200C2BBC0 /* LifeNode.swift */; };
 		4C9553891E5C597F00510A23 /* LifeCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9553881E5C597F00510A23 /* LifeCellNode.swift */; };
+		4C95538B1E64569900510A23 /* ButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C95538A1E64569900510A23 /* ButtonNode.swift */; };
 		4CC90BDF1DF5BF1E0053B080 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC90BDE1DF5BF1E0053B080 /* AppDelegate.swift */; };
 		4CC90BE51DF5BF1F0053B080 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC90BE41DF5BF1F0053B080 /* GameScene.swift */; };
 		4CC90BE71DF5BF1F0053B080 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC90BE61DF5BF1F0053B080 /* GameViewController.swift */; };
@@ -36,6 +37,7 @@
 		4C8A23421E55ED4C00C2BBC0 /* MapNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapNode.swift; sourceTree = "<group>"; };
 		4C8A23481E5B0C6200C2BBC0 /* LifeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LifeNode.swift; sourceTree = "<group>"; };
 		4C9553881E5C597F00510A23 /* LifeCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LifeCellNode.swift; sourceTree = "<group>"; };
+		4C95538A1E64569900510A23 /* ButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonNode.swift; sourceTree = "<group>"; };
 		4CC90BDB1DF5BF1E0053B080 /* Maze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CC90BDE1DF5BF1E0053B080 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4CC90BE41DF5BF1F0053B080 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				4CC90C101E264B570053B080 /* MazeNode.swift */,
 				4C8A23481E5B0C6200C2BBC0 /* LifeNode.swift */,
 				4C9553881E5C597F00510A23 /* LifeCellNode.swift */,
+				4C95538A1E64569900510A23 /* ButtonNode.swift */,
 			);
 			name = Nodes;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 				4CC90C0F1E2646870053B080 /* MazeModel.swift in Sources */,
 				4C8A23301E3B5EC600C2BBC0 /* Definition.swift in Sources */,
 				4CC90BDF1DF5BF1E0053B080 /* AppDelegate.swift in Sources */,
+				4C95538B1E64569900510A23 /* ButtonNode.swift in Sources */,
 				4CC90BF71DF703600053B080 /* Direction.swift in Sources */,
 				4C9553891E5C597F00510A23 /* LifeCellNode.swift in Sources */,
 			);

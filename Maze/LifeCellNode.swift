@@ -12,7 +12,8 @@ import SpriteKit
 class LifeCellNode: SKShapeNode {
     
     let cornerRadius: CGFloat = 3.0
-    let animationTime: CGFloat = 0.5
+    let animationTime: CGFloat = 0.25
+    let offset: CGFloat = 7.0
     
     var cell: Cell
     
@@ -28,8 +29,9 @@ class LifeCellNode: SKShapeNode {
         
         let showAction = SKAction.customAction(withDuration: TimeInterval(animationTime)) { [unowned self] node, time in
             if let shapeNode = node as? SKShapeNode {
-                shapeNode.path = self.path(time: self.animationTime - time)
-                shapeNode.fillColor = SKColor.darkGray.withAlphaComponent(1 - (self.animationTime - 2 * time))
+                shapeNode.path = self.path(time: time)
+                let alpha = 1 - (1 / self.animationTime) * time
+                shapeNode.fillColor = SKColor.darkGray.withAlphaComponent(1 - alpha)
             }
         }
         
@@ -40,8 +42,9 @@ class LifeCellNode: SKShapeNode {
         
         let hideAction = SKAction.customAction(withDuration: TimeInterval(animationTime)) { [unowned self] node, time in
             if let shapeNode = node as? SKShapeNode {
-                shapeNode.path = self.path(time: time)
-                shapeNode.fillColor = SKColor.darkGray.withAlphaComponent(1 - 2 * time)
+                shapeNode.path = self.path(time: self.animationTime - time)
+                let alpha = 1 - (1 / self.animationTime) * time
+                shapeNode.fillColor = SKColor.darkGray.withAlphaComponent(alpha)
             }
         }
         
@@ -52,8 +55,9 @@ class LifeCellNode: SKShapeNode {
     
     func path(time: CGFloat) -> CGPath {
         
-        let offset: CGFloat = 10.0 + time * 15.0
-        let size = UI.wallLength - 2 * offset
+        let ratio = (1 / animationTime) * time
+        
+        let size = (UI.wallLength - 2 * offset) * ratio
         
         let rect = CGRect(origin: CGPoint(x: -size / 2.0, y: -size / 2.0),
                           size: CGSize(width: size, height: size))

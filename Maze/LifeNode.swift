@@ -98,14 +98,23 @@ class LifeNode: SKShapeNode {
         return cells
     }
     
+    func createAliveCell(_ row: Int, _ col: Int) {
+        cells[row][col] = true
+        cellsToShow.append(LifeCellNode(cell: Cell(row, col)))
+    }
+    
     func startTimer() {
         stopTimer()
-        timer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(self.showNextGeneration), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.showNextGeneration), userInfo: nil, repeats: true)
     }
     
     func stopTimer() {
         timer?.invalidate()
         timer = nil
+    }
+    
+    func blink() {
+        
     }
     
     func show() {

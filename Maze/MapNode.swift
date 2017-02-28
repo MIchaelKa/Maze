@@ -26,6 +26,8 @@ class MapNode: SKShapeNode {
     
     var currentMaze: MazeNode?
     
+    var isRunning = true
+    
     init(row: Int, col: Int) {
         
         rowNumber = row
@@ -63,11 +65,37 @@ class MapNode: SKShapeNode {
         addChild(node)
     }
     
+    func startLifeNodes() {
+        for node in children {
+            if let lifeNode = node as? LifeNode {
+                lifeNode.startTimer()
+            }
+        }
+    }
+    
+    func stopLifeNodes() {
+        for node in children {
+            if let lifeNode = node as? LifeNode {
+                lifeNode.stopTimer()
+            }
+        }
+    }
+    
     // MARK: Move
     
     func makeMove(direction: Direction) {
         
         playerCoord.makeMove(to: direction)
+        
+        if playerCoord == Cell(8, 12) {
+            if !isRunning {
+                startLifeNodes()
+                isRunning = true
+            } else {
+                stopLifeNodes()
+                isRunning = false
+            }
+        }
         
         print("[MapNode] makeMove: \(direction) - (\(playerCoord.row), \(playerCoord.col))")
         

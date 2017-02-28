@@ -47,15 +47,14 @@ class GameScene: SKScene {
         
         world?.removeFromParent()
         
-        world = MapNode(row: 13, col: 13)
+        world = MapNode(row: 21, col: 21)
         world!.position = CGPoint(x: frame.midX, y: frame.midY)
         world!.savedPosition = world?.position
         
         world!.addMazeNode(node: MazeNode(row: 5, col: 5, pos: Cell(3, 3)))
-        world!.addMazeNode(node: MazeNode(row: 3, col: 3, pos: Cell(8, 8)))
         world!.addMazeNode(node: MazeNode(row: 3, col: 3, pos: Cell(8, 2)))
         
-        world!.addLifeNode(node: LifeNode(row: 5, col: 5, pos: Cell(3, 9)))
+        world!.addLifeNode(node: LifeNode(row: 9, col: 9, pos: Cell(8, 12)))
         
         world!.drawPlayer()
         
